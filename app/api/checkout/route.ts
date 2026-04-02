@@ -30,8 +30,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'subscription',
-      success_url: "https://responderesenas.vercel.app/app?success=true",
-      cancel_url: "https://responderesenas.vercel.app/pricing",
+      success_url: "https://respondepro.com/app?success=true",
+      cancel_url: "https://respondepro.com/pricing",
       customer_email: email,
       metadata: {
         email,

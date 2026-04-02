@@ -130,6 +130,14 @@ REGLAS OBLIGATORIAS:
 8. Sin emojis. Sin hashtags.
 ${extraInstructions}
 
+ANTES DE GENERAR, REPASA ESTA CHECKLIST PARA CADA RESPUESTA:
+- ¿Digo "tiene razón"? → REESCRIBE
+- ¿Invento algo que el negocio supuestamente va a hacer? → REESCRIBE
+- ¿Valido que el cliente se vaya a otro sitio? → REESCRIBE
+- ¿Suena como un email de atención al cliente de una gran empresa? → REESCRIBE
+- ¿Tiene más de 3 frases? → ACORTA
+- ¿Podría servir para cualquier negocio sin cambiar nada? → REESCRIBE, hazla más específica
+
 Responde SOLO JSON: ["resp1","resp2","resp3"]`;
 
     // Fetch from Anthropic with timeout

@@ -9,7 +9,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { review, stars, businessType, tone, businessName, language, extraInfo, proEmail } = body;
+    const { review, stars, businessType, tone, businessName, language, proEmail } = body;
 
     if (!review || !stars || !businessType || !tone) {
       return NextResponse.json({ error: "Faltan datos obligatorios" }, { status: 400 });
@@ -59,28 +59,43 @@ export async function POST(req: Request) {
     if (language && language !== 'Español') {
       extraInstructions += `\n- Genera las respuestas en ${language}. El tono y estilo deben ser naturales en ese idioma, no una traducción literal.`;
     }
-    if (extraInfo) {
-      extraInstructions += `\n\nINFORMACIÓN EXTRA Y EVENTOS DEL NEGOCIO:\n${extraInfo}\n- IMPORTANTE: Usa esta información para personalizar la respuesta. Si hay eventos próximos o recomendaciones específicas (platos, servicios), incorpóralos de forma natural como una invitación o sugerencia para la próxima visita. No lo pongas como una lista, sino como parte de la conversación del dueño.`;
-    }
 
-    const prompt = `3 respuestas a esta reseña de Google de un ${businessType}. ${stars} estrellas. Tono: ${toneDescription}.
-${toneDescription === "profesional y empático" ? "Habla de usted." : "Tutea."} ${toneDescription.includes("humor") ? "Usa ingenio y humor elegante." : ""}
+    const prompt = `Escribe 3 respuestas cortas a esta reseña de Google. Eres el dueño de un ${businessType} en España respondiendo personalmente.
 
-"${review}"
+Reseña (${stars}/5): "${review}"
 
-Reglas estrictas:
-- 2 frases máximo por respuesta
-- Menciona algo concreto de la reseña
-- NUNCA inventes cambios o mejoras del negocio
-- NUNCA digas "lamentamos", "entendemos su frustración", "tiene razón", ni frases de servicio al cliente
-- NUNCA comentes si el cliente dice que se va a otro sitio
-- Si es negativa: reconoce breve, deja puerta abierta. Que quien lea piense "este sitio es serio"
-- Si es positiva: agradece algo concreto, invita a volver casual
-- 3 respuestas muy diferentes entre sí
-- Vocabulario de ${businessType}
+Tono: ${toneDescription}
+
+${toneDescription === "profesional y empático" ? `TONO PROFESIONAL — habla de usted, educado pero HUMANO (no corporativo):
+Bien: "Sentimos mucho lo de las hamburguesas y patatas que faltaban. No es lo que queremos ofrecer y lo tenemos presente. Si nos da otra oportunidad, estaremos pendientes."
+Bien: "Gracias por contárnoslo. Que falten cosas en el pedido es un fallo que nos tomamos en serio. Esperamos poder atenderle mejor la próxima vez."
+Mal: "Reconocemos que nuestros estándares no se están cumpliendo" (suena a multinacional)
+Mal: "Le invitamos a contactarnos a través de nuestros canales oficiales" (nadie habla así)
+Mal: "Estos incidentes serán revisados por nuestro equipo" (corporativo)` :
+
+toneDescription === "cercano, como el dueño del negocio" ? `TONO CERCANO — tutea, habla como el dueño en la barra:
+Bien: "Vaya, lo de que falten hamburguesas y patatas no tiene nombre. Lo sabemos y nos fastidia. Pásate otro día y verás que la cosa cambia."
+Bien: "Qué rabia lo de los pedidos incompletos, en serio. No es lo normal. Si te animas a volver, estaremos atentos."
+Mal: "Entendemos tu frustración y trabajaremos para mejorar" (suena a robot)
+Mal: "Tomamos nota de tu feedback" (nadie dice feedback en un bar)` :
+
+`TONO CON HUMOR — tutea, ingenio y gracia sin faltar al respeto:
+Bien: "Lo de las hamburguesas desaparecidas es un misterio que ni Scooby-Doo resolvería. Bromas aparte, es un fallo nuestro y lo sentimos. Danos otra oportunidad y esta vez contamos las hamburguesas dos veces."
+Bien: "Patatas y hamburguesas que se pierden por el camino... ojalá fuera porque se las come el repartidor, pero no, es culpa nuestra. Si vuelves, te prometemos un pedido con todo y sin sorpresas."
+Mal: "Lamentamos la situación y estamos implementando mejoras" (ni gracioso ni humano)`}
+
+REGLAS:
+- Máximo 2-3 frases. Breve y directo.
+- Menciona algo CONCRETO de la reseña (hamburguesas, patatas, espera, lo que sea)
+- Si mencionan irse a otro sitio, IGNÓRALO — no lo comentes
+- NO inventes soluciones ("hemos implementado", "nuevo protocolo")
+- NO te humilles ("tiene toda la razón", "es inaceptable")
+- Las 3 respuestas deben sonar DIFERENTE entre sí
+- Que suene a PERSONA REAL, no a departamento de atención al cliente
+- Sin emojis, sin hashtags
 ${extraInstructions}
 
-Solo JSON: ["r1","r2","r3"]`;
+JSON: ["resp1","resp2","resp3"]`;
 
     // Fetch from Anthropic with timeout
     const fetchWithTimeout = async () => {

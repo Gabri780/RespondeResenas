@@ -150,7 +150,6 @@ function PageContent() {
   const [tone, setTone] = useState('profesional');
   const [businessName, setBusinessName] = useState('');
   const [language, setLanguage] = useState('Español');
-  const [extraInfo, setExtraInfo] = useState('');
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -293,7 +292,6 @@ function PageContent() {
           tone,
           businessName,
           language,
-          extraInfo,
           proEmail
         }),
         signal: controller.signal,
@@ -411,27 +409,6 @@ function PageContent() {
                 className="w-full h-40 p-4 rounded-xl border-2 border-border-color bg-[#FDF8F3]/50 focus:bg-white focus:border-brand-primary/50 outline-none transition-all resize-none text-foreground text-sm md:text-base shadow-inner"
               />
             </div>
-
-            {/* Extra Info Input */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <label className="block text-sm font-bold mb-3 text-foreground tracking-tight flex items-center gap-2">
-                Información extra / Eventos próximos
-                <span className="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded-full uppercase tracking-wider font-black">Nuevo</span>
-              </label>
-              <textarea
-                value={extraInfo}
-                onChange={(e) => setExtraInfo(e.target.value)}
-                placeholder="Ej: Recomienda la tarta de queso o menciona el concierto de jazz de este viernes..."
-                className="w-full h-24 p-4 rounded-xl border-2 border-dashed border-brand-primary/30 bg-brand-primary/[0.02] focus:bg-white focus:border-brand-primary/50 focus:border-solid outline-none transition-all resize-none text-foreground text-sm md:text-base"
-              />
-              <p className="text-[10px] text-text-secondary mt-2 px-1 italic">
-                Usa este espacio para que la IA incluya platos que recomendar o invitar a eventos.
-              </p>
-            </motion.div>
 
             {/* Stars Selector */}
             <div>

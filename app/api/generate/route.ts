@@ -60,38 +60,50 @@ export async function POST(req: Request) {
       extraInstructions += `\n- Genera las respuestas en ${language}. El tono y estilo deben ser naturales en ese idioma, no una traducción literal.`;
     }
 
-    const prompt = `Escribe 3 respuestas cortas a esta reseña de Google. Eres el dueño de un ${businessType} en España respondiendo personalmente.
+    const prompt = `Escribe 3 respuestas cortas a esta reseña de Google. Eres el dueño de un ${businessType} en España.
 
 Reseña (${stars}/5): "${review}"
 
 Tono: ${toneDescription}
 
-${toneDescription === "profesional y empático" ? `TONO PROFESIONAL — habla de usted, educado pero HUMANO (no corporativo):
-Bien: "Sentimos mucho lo de las hamburguesas y patatas que faltaban. No es lo que queremos ofrecer y lo tenemos presente. Si nos da otra oportunidad, estaremos pendientes."
-Bien: "Gracias por contárnoslo. Que falten cosas en el pedido es un fallo que nos tomamos en serio. Esperamos poder atenderle mejor la próxima vez."
-Mal: "Reconocemos que nuestros estándares no se están cumpliendo" (suena a multinacional)
-Mal: "Le invitamos a contactarnos a través de nuestros canales oficiales" (nadie habla así)
-Mal: "Estos incidentes serán revisados por nuestro equipo" (corporativo)` :
+${stars <= 2 ? `RESEÑA NEGATIVA — sé breve, profesional, y queda bien ante quien lo lea:
+- Frase 1: Agradece o reconoce brevemente mencionando algo concreto de la reseña
+- Frase 2: Invita a contactar directamente para solucionarlo
+- MÁXIMO 2 frases. No más.
+- NO te humilles, no inventes soluciones, no menciones si dicen que se van a otro sitio
+- Que cualquier futuro cliente que lea esto piense "este negocio es serio y profesional"
 
-toneDescription === "cercano, como el dueño del negocio" ? `TONO CERCANO — tutea, habla como el dueño en la barra:
-Bien: "Vaya, lo de que falten hamburguesas y patatas no tiene nombre. Lo sabemos y nos fastidia. Pásate otro día y verás que la cosa cambia."
-Bien: "Qué rabia lo de los pedidos incompletos, en serio. No es lo normal. Si te animas a volver, estaremos atentos."
-Mal: "Entendemos tu frustración y trabajaremos para mejorar" (suena a robot)
-Mal: "Tomamos nota de tu feedback" (nadie dice feedback en un bar)` :
+${toneDescription === "profesional y empático" ?
+`Ejemplo: "Sentimos lo de las hamburguesas y patatas que faltaban en su pedido. Si nos contacta directamente podremos revisarlo y compensarle como es debido."
+Ejemplo: "No es la experiencia que queremos dar con nuestros pedidos para llevar. Estamos a su disposición para resolverlo personalmente."` :
+toneDescription === "cercano, como el dueño del negocio" ?
+`Ejemplo: "Vaya, lo de que falten cosas en el pedido no tiene nombre. Escríbenos directamente y lo arreglamos."
+Ejemplo: "Nos fastidia mucho lo de las hamburguesas y patatas que faltaban. Contacta con nosotros y lo solucionamos."` :
+`Ejemplo: "Las hamburguesas que se escapan del pedido no era el truco de magia que teníamos planeado. Escríbenos y lo arreglamos, esta vez sin sorpresas."
+Ejemplo: "Patatas y hamburguesas desaparecidas... ni Houdini lo haría mejor. Bromas aparte, contacta con nosotros y lo solucionamos."`}` :
 
-`TONO CON HUMOR — tutea, ingenio y gracia sin faltar al respeto:
-Bien: "Lo de las hamburguesas desaparecidas es un misterio que ni Scooby-Doo resolvería. Bromas aparte, es un fallo nuestro y lo sentimos. Danos otra oportunidad y esta vez contamos las hamburguesas dos veces."
-Bien: "Patatas y hamburguesas que se pierden por el camino... ojalá fuera porque se las come el repartidor, pero no, es culpa nuestra. Si vuelves, te prometemos un pedido con todo y sin sorpresas."
-Mal: "Lamentamos la situación y estamos implementando mejoras" (ni gracioso ni humano)`}
+stars === 3 ? `RESEÑA MEDIA — valora lo bueno, reconoce lo mejorable:
+- Máximo 2-3 frases
+- Agradece lo positivo que mencionan
+- Reconoce brevemente lo negativo
+- Cierra con invitación a volver` :
+
+`RESEÑA POSITIVA — agradece de forma natural:
+- Máximo 2 frases
+- Menciona algo concreto que dicen en la reseña
+- Invita a volver de forma casual
+- No seas empalagoso
+
+${toneDescription === "profesional y empático" ?
+`Ejemplo: "Le agradecemos que destaque nuestra paella. Un placer atenderle, esperamos verle de nuevo."` :
+toneDescription === "cercano, como el dueño del negocio" ?
+`Ejemplo: "Nos alegra un montón que os gustara la paella. Volved cuando queráis, aquí os esperamos."` :
+`Ejemplo: "La paella os ha gustado... pues esperad a probar los postres. Volved pronto y lo comprobáis."` }`}
 
 REGLAS:
-- Máximo 2-3 frases. Breve y directo.
-- Menciona algo CONCRETO de la reseña (hamburguesas, patatas, espera, lo que sea)
-- Si mencionan irse a otro sitio, IGNÓRALO — no lo comentes
-- NO inventes soluciones ("hemos implementado", "nuevo protocolo")
-- NO te humilles ("tiene toda la razón", "es inaceptable")
-- Las 3 respuestas deben sonar DIFERENTE entre sí
-- Que suene a PERSONA REAL, no a departamento de atención al cliente
+- Menciona algo CONCRETO de la reseña
+- Las 3 respuestas deben sonar DIFERENTE
+- Adapta vocabulario al tipo de negocio
 - Sin emojis, sin hashtags
 ${extraInstructions}
 

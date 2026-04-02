@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FDF8F3;
+  --foreground: #2C1E10;
+  --brand-primary: #8B6F47;
+  --text-secondary: #6B5A48;
+  --border-color: #E8DDD0;
+  --bg-gradient-to: #EDE3D5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-primary: var(--brand-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-color: var(--border-color);
+  --color-bg-gradient-to: var(--bg-gradient-to);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+}
+
+body {
+  background: linear-gradient(to bottom, var(--background), var(--bg-gradient-to));
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}

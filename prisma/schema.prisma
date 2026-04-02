@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Generation {
+  id           Int      @id @default(autoincrement())
+  review       String
+  stars        Int
+  businessType String
+  tone         String
+  responses    String   // Para guardar JSON como string
+  ipAddress    String
+  createdAt    DateTime @default(now())
+}
+
+model Usage {
+  id        Int      @id @default(autoincrement())
+  ipAddress String
+  count     Int      @default(0)
+  date      String   // Formato YYYY-MM-DD
+}
+
+model Subscription {
+  id                   Int      @id @default(autoincrement())
+  email                String   @unique
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+  status               String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+

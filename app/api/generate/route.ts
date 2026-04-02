@@ -9,7 +9,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { review, stars, businessType, tone, businessName, language, proEmail } = body;
+    const { review, stars, businessType, tone, businessName, language, extraInfo, proEmail } = body;
 
     if (!review || !stars || !businessType || !tone) {
       return NextResponse.json({ error: "Faltan datos obligatorios" }, { status: 400 });
@@ -58,6 +58,9 @@ export async function POST(req: Request) {
     }
     if (language && language !== 'Español') {
       extraInstructions += `\n- Genera las respuestas en ${language}. El tono y estilo deben ser naturales en ese idioma, no una traducción literal.`;
+    }
+    if (extraInfo) {
+      extraInstructions += `\n\nINFORMACIÓN EXTRA Y EVENTOS DEL NEGOCIO:\n${extraInfo}\n- IMPORTANTE: Usa esta información para personalizar la respuesta. Si hay eventos próximos o recomendaciones específicas (platos, servicios), incorpóralos de forma natural como una invitación o sugerencia para la próxima visita. No lo pongas como una lista, sino como parte de la conversación del dueño.`;
     }
 
     const prompt = `Eres el dueño de un negocio local en España. Respondes personalmente a las reseñas de Google de tu negocio.

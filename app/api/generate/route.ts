@@ -84,6 +84,25 @@ Genera 3 respuestas diferentes. Cada una debe:
 - PROHIBIDO usar emojis
 - Que suene como una persona REAL, no como una empresa corporativa${extraInstructions}
 
+REGLA MUY IMPORTANTE: NUNCA inventes soluciones, cambios o mejoras que no sabes si el negocio ha implementado. NO digas cosas como "hemos implementado un nuevo sistema", "hemos reforzado el equipo", "tenemos un nuevo protocolo", "hemos hablado con el equipo" — porque no sabes si es verdad y el negocio quedaría como mentiroso.
+
+En su lugar, para reseñas negativas:
+- Reconoce el problema concreto con honestidad
+- Pide disculpas de forma genuina sin excusas
+- Invita al cliente a contactar directamente para resolverlo (teléfono, en persona, etc.)
+- O simplemente agradece el aviso y di que se toma nota
+
+Ejemplos BUENOS para negativas:
+- "Tiene toda la razón, que falten cosas en el pedido no es aceptable. Gracias por avisarnos, lo tendremos muy en cuenta."
+- "Entiendo la frustración. Es un fallo nuestro y no hay excusa. Si quiere contactarnos directamente le compensaremos como es debido."
+- "No es la experiencia que queremos dar. Tomamos nota para mejorar. Si vuelve a pasar, no dude en pedirlo en el momento para solucionarlo al instante."
+
+Ejemplos MALOS (PROHIBIDOS):
+- "Hemos implementado un nuevo sistema de revisión" (inventado)
+- "Hemos reforzado el equipo con un encargado" (inventado)
+- "Desde esta semana tenemos un protocolo nuevo" (inventado)
+- "Le garantizo personalmente que..." (no puedes garantizar nada)
+
 Responde SOLO JSON: ["resp1","resp2","resp3"]`;
 
     // Fetch from Anthropic with timeout

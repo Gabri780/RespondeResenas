@@ -63,82 +63,63 @@ export async function POST(req: Request) {
       extraInstructions += `\n\nINFORMACIÓN EXTRA Y EVENTOS DEL NEGOCIO:\n${extraInfo}\n- IMPORTANTE: Usa esta información para personalizar la respuesta. Si hay eventos próximos o recomendaciones específicas (platos, servicios), incorpóralos de forma natural como una invitación o sugerencia para la próxima visita. No lo pongas como una lista, sino como parte de la conversación del dueño.`;
     }
 
-    const prompt = `Eres ${businessName || "el dueño de un " + businessType} en España. Respondes personalmente a cada reseña porque te importa tu negocio y tus clientes.
+    const prompt = `Genera 3 respuestas a esta reseña de Google para un ${businessType} en España.
 
-RESEÑA (${stars} estrellas):
-"${review}"
+RESEÑA (${stars}/5 estrellas): "${review}"
 
-NEGOCIO: ${businessType}
-TONO: ${toneDescription}
+TONO ELEGIDO: ${toneDescription}
 
-INSTRUCCIONES POR TONO:
+CÓMO DEBE SONAR CADA TONO:
 
-Si tono es "profesional y empático":
+PROFESIONAL:
 - Habla de usted
-- Educado pero humano, no corporativo
-- Ejemplo: "Le agradezco que nos cuente su experiencia. Lo del tiempo de espera no es lo habitual y tomamos nota. Nos encantaría que nos diese otra oportunidad."
+- Breve, educado, con dignidad
+- Ejemplo positiva: "Le agradecemos que destaque nuestro [cosa específica]. Es un placer atenderle y esperamos verle de nuevo."
+- Ejemplo negativa: "Sentimos lo de [problema concreto]. Lo tenemos en cuenta. Si nos da otra oportunidad, estaremos atentos."
+- Ejemplo media: "Nos alegra que disfrutara de [lo bueno]. Sobre [lo malo], tomamos nota para mejorar."
 
-Si tono es "cercano, como el dueño del negocio":
+CERCANO:
 - Tutea al cliente
-- Habla como un dueño real, directo y cálido
-- Usa expresiones naturales españolas
-- Ejemplo: "Qué rabia lo de la espera, de verdad. No es lo normal y lo sabemos. Pásate otro día y verás que la cosa cambia."
+- Como hablaría el dueño en persona, directo y cálido
+- Ejemplo positiva: "Nos alegra un montón que te gustara [cosa específica]. Vuelve cuando quieras, aquí te esperamos."
+- Ejemplo negativa: "Vaya, lo de [problema concreto] no mola nada y lo sabemos. Pásate otra vez y verás que la cosa es distinta."
+- Ejemplo media: "Qué bien que te gustara [lo bueno]. Lo de [lo malo] lo tenemos fichado. A ver si la próxima es un 5."
 
-Si tono es "con humor inteligente y simpatía":
+CON HUMOR:
 - Tutea al cliente
-- Humor elegante, ingenio, juegos de palabras
-- Incluso en negativas, desarma con gracia sin faltar al respeto
-- Ejemplo: "Lo de la espera no tiene nombre... bueno sí, tiene nombre: la culpa fue nuestra. Vuelve y te prometemos que el reloj irá más rápido (o al menos la cocina)."
+- Ingenio, juegos de palabras, que el lector sonría
+- Ejemplo positiva: "Eso de [cosa específica] se lo vamos a enseñar al equipo para que se les suba el ego (un poquito, tampoco mucho). Vuelve pronto."
+- Ejemplo negativa: "Lo de [problema concreto]... sí, ahí no tenemos excusa bonita que valga. Pero si nos das otra oportunidad, prometemos poner las pilas (y las patatas, y lo que haga falta)."
+- Ejemplo media: "Lo de [lo bueno] nos saca una sonrisa. Lo de [lo malo]... eso nos la quita. Trabajaremos en equilibrar la balanza."
 
-REGLAS OBLIGATORIAS:
+REGLAS PARA NEGATIVAS (1-2 estrellas):
+- Objetivo: quedar bien ante futuros clientes que lean esto
+- Menciona el problema concreto, breve, sin arrastrarte
+- NO inventes soluciones ("hemos implementado", "nuevo protocolo", "hemos reforzado")
+- NO valides irse a la competencia ("comprendo que busque alternativas")
+- NO te humilles ("tiene toda la razón", "es inaceptable")
+- NO uses frases de call center ("lamentamos las molestias", "su opinión es importante")
+- IGNORA si mencionan irse a otro sitio — no lo comentes
 
-1. MENCIONA ALGO CONCRETO de la reseña. Si hablan de croquetas, di croquetas. Si hablan de la espera, habla de la espera. Si mencionan a un camarero, habla del equipo. PROHIBIDO responder sin referencia a algo específico de la reseña.
+REGLAS PARA POSITIVAS (4-5 estrellas):
+- Agradece mencionando algo específico de la reseña
+- Breve y natural, sin ser empalagoso
+- Invita a volver de forma casual
 
-2. VOCABULARIO DEL SECTOR:
-- Restaurante/bar: platos, cocina, barra, carta, equipo de sala
-- Hotel: estancia, habitación, recepción, descanso
-- Peluquería: corte, tratamiento, look, estilista
-- Tienda: productos, colección, atención
-- Clínica: consulta, tratamiento, especialista
-- Taller: reparación, revisión, vehículo, técnico
+REGLAS PARA MEDIAS (3 estrellas):
+- Valora lo positivo que mencionan
+- Aborda lo negativo brevemente sin excusas
+- Deja buena impresión final
 
-3. RESEÑAS NEGATIVAS (1-2 estrellas):
-- Reconoce el fallo concreto sin hundirte
-- NO inventes soluciones: PROHIBIDO decir "hemos implementado", "hemos reforzado", "nuevo protocolo", "hemos hablado con el equipo"
-- NO seas excesivamente sumiso: PROHIBIDO "tiene toda la razón", "es inaceptable", "no hay excusa"
-- NO valides irse a la competencia: PROHIBIDO "comprendo que se vaya a X", "entiendo que no quiera volver", "es normal que busque alternativas"
-- NO uses frases corporativas: PROHIBIDO "lamentamos las molestias", "su opinión es muy importante", "no dude en contactarnos"
-- SÍ reconoce el problema con honestidad pero manteniendo la dignidad del negocio
-- SÍ invita a volver o contactar para solucionarlo
-- Recuerda: esta respuesta la leen TODOS los futuros clientes, no solo quien escribió
-
-4. RESEÑAS POSITIVAS (4-5 estrellas):
-- Agradece sin ser empalagoso
-- Destaca algo concreto que mencionan
-- Invita a volver de forma natural, no forzada
-
-5. RESEÑAS MEDIAS (3 estrellas):
-- Valora lo positivo
-- Aborda lo negativo con honestidad sin hundirte
-
-6. LAS 3 RESPUESTAS DEBEN SER CLARAMENTE DIFERENTES:
-- Opción 1: Centrada en agradecer y reconocer la experiencia
-- Opción 2: Centrada en el detalle específico que mencionan
-- Opción 3: Centrada en la invitación a volver o solucionar
-
-7. Máximo 3 frases por respuesta. Breve y directo.
-8. Sin emojis. Sin hashtags.
+REGLAS GENERALES:
+- Máximo 2-3 frases. NUNCA más de 3.
+- Menciona algo ESPECÍFICO de la reseña
+- Adapta vocabulario al sector (restaurante=platos/cocina, hotel=estancia, peluquería=corte/tratamiento, tienda=productos, clínica=consulta, taller=reparación)
+- Las 3 respuestas deben ser CLARAMENTE DIFERENTES entre sí
+- Sin emojis, sin hashtags
 ${extraInstructions}
 
-ANTES DE GENERAR, REPASA ESTA CHECKLIST PARA CADA RESPUESTA:
-- ¿Digo "tiene razón"? → REESCRIBE
-- ¿Invento algo que el negocio supuestamente va a hacer? → REESCRIBE
-- ¿Valido que el cliente se vaya a otro sitio? → REESCRIBE
-- ¿Suena como un email de atención al cliente de una gran empresa? → REESCRIBE
-- ¿Tiene más de 3 frases? → ACORTA
-- ¿Podría servir para cualquier negocio sin cambiar nada? → REESCRIBE, hazla más específica
-
-Responde SOLO JSON: ["resp1","resp2","resp3"]`;
+JSON: ["resp1","resp2","resp3"]`;
 
     // Fetch from Anthropic with timeout
     const fetchWithTimeout = async () => {

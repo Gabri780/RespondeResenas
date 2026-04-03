@@ -88,7 +88,7 @@ export default function LandingPage() {
               Probar gratis
             </Link>
             <p className="mt-4 text-sm text-text-secondary">
-              Sin registro · 5 respuestas gratis
+              Sin registro · 2 respuestas gratis
             </p>
           </motion.div>
         </section>

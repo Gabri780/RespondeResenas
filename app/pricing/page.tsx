@@ -44,7 +44,7 @@ export default function PricingPage() {
       price: "0€",
       desc: "Perfecto para pequeños negocios locales.",
       features: [
-        "5 respuestas al día",
+        "2 respuestas al día",
         "Todos los tonos (Profesional, Cercano, Humor)",
         "Todos los tipos de negocios",
         "Soporte por email",

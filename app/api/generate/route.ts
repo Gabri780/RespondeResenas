@@ -35,9 +35,9 @@ export async function POST(req: Request) {
       where: { ipAddress, date: today },
     });
 
-    if (!isPro && usage && usage.count >= 5) {
+    if (!isPro && usage && usage.count >= 2) {
       return NextResponse.json(
-        { error: "Has alcanzado el límite diario de 5 respuestas gratuitas" },
+        { error: "Has alcanzado el límite diario de 2 respuestas gratuitas" },
         { status: 429 }
       );
     }

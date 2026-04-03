@@ -113,6 +113,10 @@ ${toneDescription === "profesional y empático" ?
 
 REGLAS:
 - Menciona algo CONCRETO de la reseña
+- ESTRUCTURA DE LAS 3 OPCIONES:
+  1. RESPUESTA 1 (Corta): Máximo 1-2 frases. Muy directa.
+  2. RESPUESTA 2 (Media): Máximo 2-3 frases. Equilibrada y profesional.
+  3. RESPUESTA 3 (Detallada): Hasta 4 frases. Más cálida, explicativa e integradora.
 - Las 3 respuestas deben sonar DIFERENTE
 - Adapta vocabulario al tipo de negocio
 - Sin emojis, sin hashtags

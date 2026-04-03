@@ -166,6 +166,10 @@ function PageContent() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedResponse, setEditedResponse] = useState<string>('');
 
+  const [refiningId, setRefiningId] = useState<number | null>(null);
+  const [refineText, setRefineText] = useState<string>('');
+  const [isRefining, setIsRefining] = useState(false);
+
   const [proEmail, setProEmail] = useState<string | null>(null);
   const [isPro, setIsPro] = useState(false);
   const [showProModal, setShowProModal] = useState(false);
@@ -331,6 +335,37 @@ function PageContent() {
       }
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleRefine = async (id: number) => {
+    if (!refineText.trim()) return;
+
+    setIsRefining(true);
+    try {
+      const response = await fetch('/api/refine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          review: reviewText,
+          currentResponse: responses[id],
+          instruction: refineText,
+          proEmail
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Error al refinar');
+
+      const newResponses = [...responses];
+      newResponses[id] = data.newResponse;
+      setResponses(newResponses);
+      setRefiningId(null);
+      setRefineText('');
+    } catch (err: any) {
+      alert(err.message || 'No se ha podido aplicar el cambio.');
+    } finally {
+      setIsRefining(false);
     }
   };
 
@@ -627,9 +662,59 @@ function PageContent() {
                             >
                               Editar
                             </button>
+                            <button
+                              onClick={() => {
+                                setRefiningId(refiningId === i ? null : i);
+                                setRefineText('');
+                              }}
+                              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold border-2 transition-all active:scale-95 min-h-[44px] ${
+                                refiningId === i 
+                                  ? 'bg-brand-primary/10 border-brand-primary text-brand-primary' 
+                                  : 'bg-white border-border-color text-foreground hover:border-brand-primary hover:text-brand-primary'
+                              }`}
+                            >
+                              Refinar ✨
+                            </button>
                           </>
                         )}
                       </div>
+
+                      {/* Refinement Interface */}
+                      <AnimatePresence>
+                        {refiningId === i && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-6 pt-6 border-t border-brand-primary/10 space-y-4"
+                          >
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={refineText}
+                                onChange={(e) => setRefineText(e.target.value)}
+                                placeholder="Ej: Hazla más corta, añade que tenemos terraza..."
+                                className="flex-1 p-3 rounded-xl border border-brand-primary/20 bg-brand-primary/5 outline-none focus:border-brand-primary transition-all text-sm font-medium"
+                                onKeyDown={(e) => e.key === 'Enter' && handleRefine(i)}
+                              />
+                              <button
+                                onClick={() => handleRefine(i)}
+                                disabled={isRefining || !refineText.trim()}
+                                className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+                                  isRefining || !refineText.trim()
+                                    ? 'bg-border-color text-text-secondary cursor-not-allowed'
+                                    : 'bg-brand-primary text-white hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/10 active:scale-95'
+                                }`}
+                              >
+                                {isRefining ? 'Procesando...' : 'Aplicar'}
+                              </button>
+                            </div>
+                            <p className="text-[10px] text-brand-primary font-bold uppercase tracking-wider">
+                              La IA transformará esta respuesta según tus instrucciones.
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </motion.div>
                   ))}
                 </div>

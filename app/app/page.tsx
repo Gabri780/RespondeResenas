@@ -94,10 +94,11 @@ const ToneSelector = ({ selected, onSelect }: any) => {
     { id: 'profesional', label: 'Profesional', icon: '👔', desc: 'Formal y cercano' },
     { id: 'cercano', label: 'Cercano', icon: '🤗', desc: 'Como habla el dueño' },
     { id: 'humor', label: 'Con humor', icon: '😄', desc: 'Simpático y memorable' },
+    { id: 'custom', label: 'Personalizada', icon: '✍️', desc: 'Dile a la IA qué decir' },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
       {tones.map((tone) => (
         <button
           key={tone.id}
@@ -150,6 +151,7 @@ function PageContent() {
   const [tone, setTone] = useState('profesional');
   const [businessName, setBusinessName] = useState('');
   const [language, setLanguage] = useState('Español');
+  const [customInstructions, setCustomInstructions] = useState('');
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -292,7 +294,8 @@ function PageContent() {
           tone,
           businessName,
           language,
-          proEmail
+          proEmail,
+          customInstructions: tone === 'custom' ? customInstructions : ''
         }),
         signal: controller.signal,
       });
@@ -429,9 +432,35 @@ function PageContent() {
 
             {/* Tone Selector */}
             <div>
-              <label className="block text-sm font-bold mb-3 text-foreground tracking-tight">Elige el tono de respuesta</label>
+              <label className="block text-sm font-bold mb-3 text-foreground tracking-tight">Elige el tono de la respuesta</label>
               <ToneSelector selected={tone} onSelect={setTone} />
             </div>
+
+            {/* Custom Instructions (shown only when tone is 'custom') */}
+            <AnimatePresence mode="wait">
+              {tone === 'custom' && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  className="overflow-hidden"
+                >
+                  <label className="block text-sm font-bold mb-3 text-brand-primary tracking-tight flex items-center gap-2">
+                    <span className="text-lg">✍️</span>
+                    ¿Qué quieres que diga la IA? (Contexto, excusas, regalos...)
+                  </label>
+                  <textarea
+                    value={customInstructions}
+                    onChange={(e) => setCustomInstructions(e.target.value)}
+                    placeholder="Ej: Dile que el aire se rompió pero que ya está arreglado y que le invitamos a un café la próxima vez para compensarle."
+                    className="w-full h-32 p-4 rounded-xl border-2 border-brand-primary/30 bg-brand-primary/5 focus:bg-white focus:border-brand-primary outline-none transition-all resize-none text-foreground text-sm md:text-base shadow-inner placeholder:text-brand-primary/40"
+                  />
+                  <p className="mt-2 text-[10px] text-brand-primary/60 font-bold uppercase tracking-wider">
+                    La IA redactará 3 opciones profesionales siguiendo tu instrucción.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Language Selector */}
             <div>
@@ -486,10 +515,12 @@ function PageContent() {
               className={`w-full py-4 rounded-2xl font-black text-lg transition-all shadow-xl min-h-[60px] ${
                 isGenerating 
                   ? 'bg-border-color cursor-not-allowed text-text-secondary' 
-                  : 'bg-brand-primary text-white hover:bg-brand-primary/90 hover:scale-[1.01] active:scale-[0.98] shadow-brand-primary/30'
+                  : tone === 'custom'
+                    ? 'bg-brand-primary text-white hover:bg-brand-primary/90 hover:scale-[1.01] active:scale-[0.98] shadow-brand-primary/30'
+                    : 'bg-brand-primary text-white hover:bg-brand-primary/90 hover:scale-[1.01] active:scale-[0.98] shadow-brand-primary/30'
               }`}
             >
-              {isGenerating ? 'Generando respuestas...' : 'Generar 3 respuestas'}
+              {isGenerating ? 'Generando respuestas...' : tone === 'custom' ? 'Generar respuesta experta' : 'Generar 3 respuestas'}
             </button>
           </div>
         </div>

@@ -16,16 +16,22 @@
   --color-text-secondary: var(--text-secondary);
   --color-border-color: var(--border-color);
   --color-bg-gradient-to: var(--bg-gradient-to);
+  
   --font-sans: var(--font-inter);
   --font-outfit: var(--font-outfit);
 }
 
+html, body {
+  background-color: #050505 !important;
+  color: #FFFFFF !important;
+  color-scheme: dark;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-inter);
   min-height: 100vh;
   letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Custom Minimalist Utilities */
@@ -36,11 +42,11 @@ body {
 .minimal-glass {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .text-gradient {
-  background: linear-gradient(to bottom right, #FFFFFF, #A1A1AA);
+  background: linear-gradient(135deg, #FFFFFF 0%, #A1A1AA 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

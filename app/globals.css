@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FDF8F3;
-  --foreground: #2C1E10;
-  --brand-primary: #8B6F47;
-  --text-secondary: #6B5A48;
-  --border-color: #E8DDD0;
-  --bg-gradient-to: #EDE3D5;
+  --background: #050505;
+  --foreground: #FFFFFF;
+  --brand-primary: #C5A059;
+  --text-secondary: #A1A1AA;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --bg-gradient-to: #050505;
 }
 
 @theme inline {
@@ -16,13 +16,32 @@
   --color-text-secondary: var(--text-secondary);
   --color-border-color: var(--border-color);
   --color-bg-gradient-to: var(--bg-gradient-to);
-  --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
+  --font-sans: var(--font-inter);
+  --font-outfit: var(--font-outfit);
 }
 
 body {
-  background: linear-gradient(to bottom, var(--background), var(--bg-gradient-to));
+  background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-inter);
   min-height: 100vh;
+  letter-spacing: -0.01em;
+}
+
+/* Custom Minimalist Utilities */
+.minimal-border {
+  border: 1px solid var(--border-color);
+}
+
+.minimal-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.text-gradient {
+  background: linear-gradient(to bottom right, #FFFFFF, #A1A1AA);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

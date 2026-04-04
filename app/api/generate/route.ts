@@ -36,9 +36,9 @@ export async function POST(req: Request) {
     });
     const currentTotal = usageCount._sum.count || 0;
 
-    if (!isPro && currentTotal >= 5) {
+    if (!isPro && currentTotal >= 2) {
       return NextResponse.json(
-        { error: "Has alcanzado el límite de 5 respuestas de prueba gratuitas. Suscríbete a Pro para respuestas ilimitadas." },
+        { error: "Has alcanzado el límite de 2 respuestas de prueba gratuitas. Suscríbete a Pro para respuestas ilimitadas." },
         { status: 429 }
       );
     }

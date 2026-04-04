@@ -275,8 +275,8 @@ function PageContent() {
       return;
     }
 
-    if (!isPro && usageCount >= 2) {
-      setError('Has alcanzado el límite diario de 2 respuestas gratuitas.');
+    if (!isPro && usageCount >= 5) {
+      setError('Has alcanzado el límite de 5 respuestas de prueba gratuitas.');
       return;
     }
 
@@ -414,8 +414,8 @@ function PageContent() {
               <Link href="/pricing" className="text-xs font-bold text-text-secondary hover:text-brand-primary uppercase tracking-widest transition-colors mr-2">Precios</Link>
               {!isPro && (
                 <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-border-color shadow-sm">
-                  <span className={`w-2 h-2 rounded-full ${usageCount >= 2 ? 'bg-red-500' : 'bg-brand-primary animate-pulse'}`}></span>
-                  <span className="text-xs font-bold text-text-secondary uppercase">{Math.max(0, 2 - usageCount)}/2 gratis</span>
+                  <span className={`w-2 h-2 rounded-full ${usageCount >= 5 ? 'bg-red-500' : 'bg-brand-primary animate-pulse'}`}></span>
+                  <span className="text-xs font-bold text-text-secondary uppercase">{Math.max(0, 5 - usageCount)}/5 de prueba</span>
                 </div>
               )}
             </div>
@@ -514,7 +514,7 @@ function PageContent() {
                   {error}
                 </motion.p>
                 
-                {!isPro && usageCount >= 2 && (
+                {!isPro && usageCount >= 5 && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}

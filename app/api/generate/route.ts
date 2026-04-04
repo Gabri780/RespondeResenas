@@ -18,7 +18,6 @@ export async function POST(req: Request) {
     // Rate Limiting
     const forwardedFor = req.headers.get('x-forwarded-for');
     const ipAddress = forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
-    const today = new Date().toISOString().split('T')[0];
 
     // Check if user is Pro
     let isPro = false;
@@ -31,13 +30,15 @@ export async function POST(req: Request) {
       }
     }
 
-    let usage = await getPrisma().usage.findFirst({
-      where: { ipAddress, date: today },
+    const usageCount = await getPrisma().usage.aggregate({
+      where: { ipAddress },
+      _sum: { count: true }
     });
+    const currentTotal = usageCount._sum.count || 0;
 
-    if (!isPro && usage && usage.count >= 2) {
+    if (!isPro && currentTotal >= 5) {
       return NextResponse.json(
-        { error: "Has alcanzado el límite diario de 2 respuestas gratuitas" },
+        { error: "Has alcanzado el límite de 5 respuestas de prueba gratuitas. Suscríbete a Pro para respuestas ilimitadas." },
         { status: 429 }
       );
     }
@@ -156,17 +157,21 @@ JSON: ["resp1","resp2","resp3"]`;
     }
 
     // Use a transaction to ensure atomic increment and generation saving
-    let newCount = 1;
+    let newTotal = currentTotal + 1;
     await getPrisma().$transaction(async (tx: any) => {
-      if (usage) {
-        const u = await tx.usage.update({
-          where: { id: usage.id },
+      const existingUsage = await tx.usage.findFirst({
+        where: { ipAddress },
+        orderBy: { id: 'asc' }
+      });
+
+      if (existingUsage) {
+        await tx.usage.update({
+          where: { id: existingUsage.id },
           data: { count: { increment: 1 } },
         });
-        newCount = u.count;
       } else {
         await tx.usage.create({
-          data: { ipAddress, date: today, count: 1 },
+          data: { ipAddress, date: 'lifetime', count: 1 },
         });
       }
 
@@ -182,7 +187,7 @@ JSON: ["resp1","resp2","resp3"]`;
       });
     });
 
-    return NextResponse.json({ responses: responsesArray, usageCount: newCount });
+    return NextResponse.json({ responses: responsesArray, usageCount: newTotal });
 
   } catch (error: any) {
     if (error.message === 'Timeout') {
